@@ -3,7 +3,7 @@
 让 Claude Code（MiMo 或任意 Anthropic 兼容端点）与 Codex（ChatGPT 订阅）两个 VSCode 面板
 **分工协作、文件交接**，免复制粘贴；附 `ask-codex` 桥，可在 Claude 面板内直接拉 Codex 进讨论。
 
-## 实现架构（3 个组件，无服务无后台无 API key）
+## 实现架构（3 个组件，无服务无后台，用你自己的登录态）
 
 ```
 ┌─ Codex 面板(规划/裁决) ──写──→ handoff/plan.md ──读──→ Claude 面板(执行)

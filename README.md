@@ -62,6 +62,22 @@ bash install.sh --with-handoff   # 同时在当前目录建 handoff/ 信箱
 - **桥参数**：`-r` 另开新会话（默认续上次，保留上下文）；`-w` 允许 Codex 写工作区；`-o` 自定义落盘文件
 - **额度**：桥走 ChatGPT Plus/Pro **订阅的 Codex 用量**（与面板同池），不是 API 计费
 
+## 用量控制（ChatGPT 额度少时必看）
+
+Codex(Plus) 的用量是 5 小时窗口 + 周上限；**续会话每次调用都会重发全部历史**，是最贵的隐藏成本。
+桥内置三道闸 + 记账：
+
+| 机制 | 默认 | 调节 |
+|---|---|---|
+| 会话自动轮换 | 单会话累计 ≥20k tokens 自动开新会话（旧上下文不带入） | `ASK_CODEX_SESSION_LIMIT`（0=关） |
+| 每日预算闸 | 不启用 | `ASK_CODEX_DAILY_BUDGET=30000` 后，超出要 `-f` 才放行 |
+| 用量记账 | 每次调用后打印「本次/今日/会话」累计，落盘 `handoff/.codex_usage.tsv` | — |
+| 换便宜模型 | 跟随 `~/.codex/config.toml` | `ASK_CODEX_MODEL=<型号>` |
+| 限制回复长度 | 不限 | `ASK_CODEX_MAX_OUTPUT=1500` |
+
+省额度习惯：**日常交接走文件信箱（零消耗）；`问 Codex` 只留给关键裁决/评审**；
+长讨论放 Codex 面板手动聊（可控），桥只做短问答。
+
 ## 工作原理
 
 - **没有魔法**：Codex 插件自带完整 `codex` CLI 并与插件共用 `~/.codex/auth.json` 登录态；

@@ -18,3 +18,4 @@ bash "$HOME/.claude/skills/ask-codex/ask_codex.sh" "问题内容"
 - 跑完 Read 输出文件，向用户转述要点；原文留在 `handoff/consult/` 备查。
 - 路线/方向分歧记入 `handoff/status.md` 的“待裁决”，不要自己拍板。
 - 常用环境变量：`ASK_CODEX_NO_PROXY=1`（不走默认 7892 代理）、`ASK_CODEX_BIN`（指定 codex 路径）。
+- 额度控制：单会话默认 20k tokens 自动轮换新开（`ASK_CODEX_SESSION_LIMIT` 可调）；`ASK_CODEX_DAILY_BUDGET` 设每日闸（超了要 `-f`）；每次调用后会打印「本次/今日/会话」用量。长讨论别用桥，走 Codex 面板。

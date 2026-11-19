@@ -49,6 +49,8 @@ bash "$HOME/.claude/skills/ask-codex/ask_codex.sh" -w "把X方案写进 handoff/
 - **代理**：默认补 `HTTPS_PROXY=http://127.0.0.1:7892`（ChatGPT 需要）。
   不走这个端口/代理没开：`ASK_CODEX_NO_PROXY=1`，或先 `export HTTPS_PROXY=...`。
 - **额度**：每次咨询按 Codex（ChatGPT 账号）配额计费；`-w` / 长上下文更贵。
+  控制旋钮：`ASK_CODEX_DAILY_BUDGET`（每日闸）/ `ASK_CODEX_SESSION_LIMIT`（会话轮换，默认 20k）/
+  `ASK_CODEX_MODEL`（换便宜模型），账本在 `handoff/.codex_usage.tsv`，详见 README《用量控制》。
 - **会话文件** `handoff/.codex_session` 丢失或过期 → 自动开新会话，无需处理。
 - **全局约定**：装在 `~/.claude/CLAUDE.md` 与 `~/.codex/AGENTS.md`（所有项目生效，新会话加载）。
   某项目分工特殊时，在该项目根写 `CLAUDE.md` / `AGENTS.md` 补充覆盖。

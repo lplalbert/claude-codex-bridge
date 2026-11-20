@@ -41,9 +41,14 @@ if [ -z "$CODEX_BIN" ]; then
   else
     OS="$(uname -s 2>/dev/null || echo unknown)"
     case "$OS" in
-      MINGW*|MSYS*|CYGWIN*) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex.exe 2>/dev/null | sort -V | tail -n1 || true)" ;;
-      *) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex 2>/dev/null | sort -V | tail -n1 || true)" ;;
+      MINGW*|MSYS*|CYGWIN*) CODEX_NAME="codex.exe" ;;
+      *) CODEX_NAME="codex" ;;
     esac
+    # 本地装在 ~/.vscode/extensions；VSCode 远程服务器（SSH/容器/WSL）装在 ~/.vscode-server*/extensions
+    for EXT_DIR in "$HOME"/.vscode/extensions "$HOME"/.vscode-server/extensions "$HOME"/.vscode-server-insiders/extensions; do
+      CODEX_BIN="$(ls -d "$EXT_DIR"/openai.chatgpt-*/bin/*/"$CODEX_NAME" 2>/dev/null | sort -V | tail -n1 || true)"
+      if [ -n "$CODEX_BIN" ]; then break; fi
+    done
   fi
 fi
 if [ -z "$CODEX_BIN" ] || [ ! -e "$CODEX_BIN" ]; then

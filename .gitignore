@@ -1,0 +1,2 @@
+# install.sh --with-handoff 在仓库目录里跑会生成示例信箱，属运行时状态不入库
+/handoff/

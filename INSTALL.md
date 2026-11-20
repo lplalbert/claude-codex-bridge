@@ -71,7 +71,9 @@ bash install.sh --with-handoff  # 同时在当前目录创建 handoff/ 信箱
   也可 `export ASK_CODEX_NO_PROXY=1`，或自己 `export HTTPS_PROXY=...` 后再跑（脚本尊重已有值）。
 - **找不到 codex**：`npm i -g @openai/codex`，或保留 openai.chatgpt 插件，或
   `export ASK_CODEX_BIN=/path/to/codex`。
-- **插件更新后路径变了**：脚本按 `~/.vscode/extensions/openai.chatgpt-*/bin/*/codex*` 通配挑最新，一般无需处理。
+- **插件更新后路径变了**：脚本按 `~/.vscode*/extensions/openai.chatgpt-*/bin/*/codex*` 通配挑最新，
+  本地（`~/.vscode`）与远程服务器（`~/.vscode-server`、`~/.vscode-server-insiders`，VSCode Remote SSH/容器
+  装插件的位置）都会依次找，一般无需处理。
 - **中文乱码**：桥已绕开（提示词走 stdin、回复落盘 UTF-8 文件）；Codex 自身 shell 输出中文乱码是它的坑，
   只信它的分析、文件内容自己读，详见 `handoff-template/PROTOCOL.md`。
 - **macOS/Linux**：桥脚本跨平台（自动识别 codex 二进制位置）；bash 需 3.2+。

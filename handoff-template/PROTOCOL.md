@@ -9,6 +9,7 @@
 |---|---|---|---|
 | `plan.md` | Codex | Claude、人 | 当前路线/计划/任务清单/裁决（带日期小节） |
 | `status.md` | Claude | Codex、人 | 交接六字段：改了哪些文件/做到哪/未完成项/验收情况/已知坑/下一步（追加式，最新在下） |
+| `PROJECT.md` | 人/Claude 维护 | Codex（桥自动带） | 项目简报（30-60 行稳定事实），问 Codex 时自动注入，防 Codex 自己翻仓库烧额度 |
 | `consult/` | ask-codex 桥 | 人 | Claude 直接咨询 Codex 的落盘回复 |
 | `.codex_session` | 桥自动维护 | 桥 | Codex 续会话 id（可删，删了就重开） |
 

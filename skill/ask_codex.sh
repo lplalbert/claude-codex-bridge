@@ -12,6 +12,7 @@
 #   ASK_CODEX_SESSION_LIMIT  单会话累计 token 上限（默认 20000，0=不轮换）
 #   ASK_CODEX_MODEL          换更省的模型（按你账号可用型号）
 #   ASK_CODEX_MAX_OUTPUT     限制回复最大 token（写入 model_max_output_tokens）
+#   ASK_CODEX_NO_PROJECT=1   不自动带项目简报（handoff/PROJECT.md）
 # 用量账本: handoff/.codex_usage.tsv（日期/会话/每次 tokens）
 set -euo pipefail
 
@@ -66,6 +67,13 @@ SID_FILE="$ROOT/handoff/.codex_session"
 USAGE="$ROOT/handoff/.codex_usage.tsv"
 [ -f "$USAGE" ] || : > "$USAGE"
 
+# ---- 项目简报：自动带上 handoff/PROJECT.md（保持精炼 ≤120 行；ASK_CODEX_NO_PROJECT=1 关闭） ----
+FULL="$Q"
+if [ "${ASK_CODEX_NO_PROJECT:-0}" != "1" ] && [ -f "$ROOT/handoff/PROJECT.md" ]; then
+  CTX="$(head -n 120 "$ROOT/handoff/PROJECT.md" | tr -d '\r')"
+  FULL="$(printf '【项目背景】\n%s\n\n【问题】\n%s' "$CTX" "$Q")"
+fi
+
 # ---- 每日预算闸 ----
 if [ "${ASK_CODEX_DAILY_BUDGET:-0}" -gt 0 ] 2>/dev/null && [ "$FORCE" = 0 ]; then
   TODAY_USED=$(awk -F'\t' -v d="$(date +%F)" '$1==d{t+=$3}END{print t+0}' "$USAGE" 2>/dev/null || echo 0)
@@ -99,7 +107,7 @@ try_run() {
     local SID
     SID="$(tr -d ' \r\n' < "$SID_FILE")"
     if [ -n "$SID" ]; then
-      if printf '%s\n' "$Q" | "$CODEX_BIN" exec resume "$SID" --skip-git-repo-check -o "$OUT" - $EXTRA >"$LOG" 2>&1; then
+      if printf '%s\n' "$FULL" | "$CODEX_BIN" exec resume "$SID" --skip-git-repo-check -o "$OUT" - $EXTRA >"$LOG" 2>&1; then
         return 0
       fi
       echo "[ask-codex] 续会话失败，改开新会话" >&2
@@ -107,7 +115,7 @@ try_run() {
   fi
   local SB="read-only"
   [ "$WRITE" = 1 ] && SB="workspace-write"
-  printf '%s\n' "$Q" | "$CODEX_BIN" exec - -s "$SB" --skip-git-repo-check --color never -C "$ROOT" -o "$OUT" $EXTRA >"$LOG" 2>&1
+  printf '%s\n' "$FULL" | "$CODEX_BIN" exec - -s "$SB" --skip-git-repo-check --color never -C "$ROOT" -o "$OUT" $EXTRA >"$LOG" 2>&1
 }
 
 RC=0

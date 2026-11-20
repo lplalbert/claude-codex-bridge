@@ -20,3 +20,4 @@ bash "$HOME/.claude/skills/ask-codex/ask_codex.sh" "问题内容"
 - 常用环境变量：`ASK_CODEX_NO_PROXY=1`（不走默认 7892 代理）、`ASK_CODEX_BIN`（指定 codex 路径）。
 - 额度控制：单会话默认 20k tokens 自动轮换新开（`ASK_CODEX_SESSION_LIMIT` 可调）；`ASK_CODEX_DAILY_BUDGET` 设每日闸（超了要 `-f`）；每次调用后会打印「本次/今日/会话」用量。长讨论别用桥，走 Codex 面板。
 - 桥若提示「已开新会话」（超限轮换、上下文已丢），把前情要点压缩写进本次问题，别指望它记得上文。
+- 问题**不用**手贴大段项目背景：桥会自动带上 `handoff/PROJECT.md` 项目简报（保持精炼 ≤60 行）；更细的材料由你摘录关键行放进问题，别让 Codex 自己翻仓库（又贵又不可靠）。

@@ -83,6 +83,7 @@ Claude 会把 GPT 拉进来出意见，落在 `handoff/consult/` 里。
 | 零件 | 位置 | 干什么 |
 |---|---|---|
 | 文件信箱 | 各项目根 `handoff/` | plan.md（Codex 写）/ status.md（Claude 写，六字段交接）/ consult/（问 Codex 的回复） |
+| 项目简报 | 各项目根 `handoff/PROJECT.md` | 30-60 行背景包（项目是什么/阶段/文件地图/口径），问 Codex 时自动带上，免得它自己翻仓库 |
 | 全局约定 | `~/.claude/CLAUDE.md` + `~/.codex/AGENTS.md` | 各插一段规则，两边开会话自动遵守 |
 | 问 Codex 桥 | `~/.claude/skills/ask-codex/` | 调用 Codex 插件自带的 codex 命令行，复用订阅登录态 |
 

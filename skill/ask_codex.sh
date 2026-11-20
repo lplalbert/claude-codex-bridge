@@ -41,9 +41,15 @@ if [ -z "$CODEX_BIN" ]; then
   else
     OS="$(uname -s 2>/dev/null || echo unknown)"
     case "$OS" in
-      MINGW*|MSYS*|CYGWIN*) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex.exe 2>/dev/null | sort -V | tail -n1 || true)" ;;
-      *) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex 2>/dev/null | sort -V | tail -n1 || true)" ;;
+      MINGW*|MSYS*|CYGWIN*) PAT='openai.chatgpt-*/bin/*/codex.exe' ;;
+      *) PAT='openai.chatgpt-*/bin/*/codex' ;;
     esac
+    # 本机 VSCode / Remote-SSH 服务端 / code-server 的扩展目录都找一遍
+    for D in "$HOME/.vscode/extensions" "$HOME/.vscode-server/extensions" "$HOME/.vscode-server-insiders/extensions" "$HOME/.local/share/code-server/extensions"; do
+      [ -d "$D" ] || continue
+      CAND="$(ls -d "$D"/$PAT 2>/dev/null | sort -V | tail -n1 || true)"
+      if [ -n "$CAND" ] && [ -e "$CAND" ]; then CODEX_BIN="$CAND"; break; fi
+    done
   fi
 fi
 if [ -z "$CODEX_BIN" ] || [ ! -e "$CODEX_BIN" ]; then
@@ -121,7 +127,14 @@ try_run() {
 RC=0
 try_run || RC=$?
 if [ $RC -ne 0 ] && [ "$AUTO_PROXY" = 1 ]; then
-  echo "[ask-codex] 代理不通，去掉代理重试一次" >&2
+  echo "[ask-codex] 代理不通，换 17890 重试（GPU 服务器常用端口）" >&2
+  export HTTPS_PROXY="http://127.0.0.1:17890"
+  export HTTP_PROXY="$HTTPS_PROXY"
+  RC=0
+  try_run || RC=$?
+fi
+if [ $RC -ne 0 ] && [ "$AUTO_PROXY" = 1 ]; then
+  echo "[ask-codex] 仍不通，去掉代理重试一次" >&2
   unset HTTPS_PROXY HTTP_PROXY
   RC=0
   try_run || RC=$?

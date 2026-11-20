@@ -67,10 +67,12 @@ bash install.sh --with-handoff  # 同时在当前目录创建 handoff/ 信箱
 - **额度**：桥走 ChatGPT Plus/Pro **订阅的 Codex 用量限额**（与面板共用一个池，周期性重置），
   不是 API 按 token 计费；省额度就多走文件信箱，"问 Codex"只留给关键裁决。
   用量控制旋钮（每日预算闸 / 会话自动轮换 / 换便宜模型）见 README《用量控制》，账本在 `handoff/.codex_usage.tsv`。
-- **代理**：默认补 `HTTPS_PROXY=http://127.0.0.1:7892`，失败自动去代理重试一次；
-  也可 `export ASK_CODEX_NO_PROXY=1`，或自己 `export HTTPS_PROXY=...` 后再跑（脚本尊重已有值）。
-- **找不到 codex**：`npm i -g @openai/codex`，或保留 openai.chatgpt 插件，或
-  `export ASK_CODEX_BIN=/path/to/codex`。
+- **代理**：默认补 `HTTPS_PROXY=http://127.0.0.1:7892`，不通自动换 17890 再试（GPU 服务器常用），
+  仍不通再去代理重试；也可 `export ASK_CODEX_NO_PROXY=1`，或自己 `export HTTPS_PROXY=...` 后再跑（脚本尊重已有值）。
+- **找不到 codex**：脚本会找 PATH 以及 VSCode / **Remote-SSH 服务端** / code-server 的扩展目录
+  （`~/.vscode/extensions`、`~/.vscode-server/extensions`、`~/.local/share/code-server/extensions`）。
+  还找不到就 `npm i -g @openai/codex`，或 `export ASK_CODEX_BIN=/path/to/codex`。
+  Remote-SSH 场景：扩展跑在服务器端，在 Remote 窗口的 Codex 面板登录过一次，服务器上就有 `~/.codex/auth.json`。
 - **插件更新后路径变了**：脚本按 `~/.vscode/extensions/openai.chatgpt-*/bin/*/codex*` 通配挑最新，一般无需处理。
 - **中文乱码**：桥已绕开（提示词走 stdin、回复落盘 UTF-8 文件）；Codex 自身 shell 输出中文乱码是它的坑，
   只信它的分析、文件内容自己读，详见 `handoff-template/PROTOCOL.md`。

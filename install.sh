@@ -19,9 +19,14 @@ if [ -z "$CODEX_BIN" ]; then
   else
     OS="$(uname -s 2>/dev/null || echo unknown)"
     case "$OS" in
-      MINGW*|MSYS*|CYGWIN*) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex.exe 2>/dev/null | sort -V | tail -n1 || true)" ;;
-      *) CODEX_BIN="$(ls -d "$HOME"/.vscode/extensions/openai.chatgpt-*/bin/*/codex 2>/dev/null | sort -V | tail -n1 || true)" ;;
+      MINGW*|MSYS*|CYGWIN*) PAT='openai.chatgpt-*/bin/*/codex.exe' ;;
+      *) PAT='openai.chatgpt-*/bin/*/codex' ;;
     esac
+    for D in "$HOME/.vscode/extensions" "$HOME/.vscode-server/extensions" "$HOME/.vscode-server-insiders/extensions" "$HOME/.local/share/code-server/extensions"; do
+      [ -d "$D" ] || continue
+      CAND="$(ls -d "$D"/$PAT 2>/dev/null | sort -V | tail -n1 || true)"
+      if [ -n "$CAND" ] && [ -e "$CAND" ]; then CODEX_BIN="$CAND"; break; fi
+    done
   fi
 fi
 if [ -n "$CODEX_BIN" ] && [ -e "$CODEX_BIN" ]; then
